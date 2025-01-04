@@ -1,0 +1,25 @@
+{
+  "name": "case-management-gen2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "This repository provides a starter template for creating applications using React+Vite and AWS Amplify, emphasizing easy setup for authentication, API, and database capabilities.",
+  "main": "eslint.config.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heybriano/amplify-vite-react-template.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heybriano/amplify-vite-react-template/issues"
+  },
+  "homepage": "https://github.com/heybriano/amplify-vite-react-template#readme"
+}
