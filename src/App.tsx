@@ -1,40 +1,43 @@
-import { useEffect, useState } from "react";
-import type { Schema } from "../amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
+// src/App.tsx
 
-const client = generateClient<Schema>();
+// 1. Import all necessary components and functions
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import { useEffect } from 'react';
+import NavBar from './components/NavBar';
+import Dashboard from './components/Dashboard';
+import FollowUpManager  from '/Users/brianonufrejow/Documents/case-management-gen2/src/components/follow-ups/FollowUpManager.tsx';
+import { CaseView } from './components/cases/CaseView';
+import ErrorBoundary from './components/ErrorBoundary';
+import './App.css';
 
+// 2. Define the main App component
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-
+  // 3. Effect to handle dark mode
   useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
   }, []);
 
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
-  }
-
+  // 4. Return the complete app structure
   return (
-    <main>
-      <h1>My todos</h1>
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
-        ))}
-      </ul>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
-          Review next step of this tutorial.
-        </a>
-      </div>
-    </main>
+    <ErrorBoundary>
+      <Router>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+          <NavBar />
+          <main className="container mx-auto px-4 py-6">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/follow-ups" element={<FollowUpManager />} />
+              <Route path="/cases/:caseId" element={<CaseView />} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+    </ErrorBoundary>
   );
 }
 
-export default App;
+// 5. Export the app with authentication wrapper
+export default withAuthenticator(App);

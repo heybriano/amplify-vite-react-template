@@ -1,0 +1,92 @@
+# Add User type for case managers
+type User @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  role: UserRole!
+  client: Client! @belongsTo
+  assignedCases: [Case] @hasMany
+  assignedFollowUps: [FollowUp] @hasMany
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum UserRole {
+  CASE_MANAGER
+  SUPERVISOR
+  ADMIN
+}
+
+# Update Case type to include assigned user
+type Case @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  caseNumber: String!
+  caseType: CaseType!
+  status: CaseStatus!
+  client: Client! @belongsTo
+  employee: Employee @belongsTo
+  assignedTo: User! @belongsTo
+  documents: [Document] @hasMany
+  followUps: [FollowUp] @hasMany
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  expirationDate: AWSDateTime
+}
+
+# Update enums as specified
+enum CaseType {
+  ILLNESS_INJURY
+  WORK_INJURY
+  ACCOMMODATION
+  PARENTAL_LEAVE
+  OTHER
+}
+
+enum CaseStatus {
+  APPROVED
+  DENIED
+  PENDING
+  CLOSED
+  EXPIRED
+  RETIRED
+}
+
+enum DocumentType {
+  MEDICAL_LETTER
+  LEGAL
+  CORRESPONDENCE
+  MEDICAL_FORM
+  OTHER_FORM
+  REMINDER
+  DECISION_LETTER
+}
+
+# Update FollowUp with priority and assignee
+enum FollowUpPriority {
+  URGENT
+  DUE
+  NORMAL
+  LOW
+}
+
+enum FollowUpStatus {
+  PAST_DUE
+  DUE_TODAY
+  UPCOMING
+  COMPLETED
+}
+
+type FollowUp @model @auth(rules: [{ allow: private }]) {
+  id: ID!
+  description: String!
+  dueDate: AWSDateTime!
+  priority: FollowUpPriority!
+  status: FollowUpStatus!
+  completed: Boolean!
+  case: Case! @belongsTo
+  assignedTo: User! @belongsTo
+  previouslyAssignedTo: [User] @manyToMany
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
